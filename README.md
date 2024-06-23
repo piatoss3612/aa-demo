@@ -1,9 +1,17 @@
 # AA(Account Abstraction) Demo
 
-[AA Demo](https://aa-demo-theta.vercel.app/)
+[AA Demo](https://aa-demo-gules.vercel.app/)
 
 - `Privy` for social login and embedded wallet
 - `Biconomy` for account abstraction and paymaster
+
+## Test Accounts
+
+```
+email: test-0475@privy.io
+phone: +1 555 555 9802
+otp: 140019
+```
 
 ## Quick Start
 
