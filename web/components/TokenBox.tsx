@@ -18,9 +18,6 @@ import { baseSepolia } from "viem/chains";
 const TokenBox = () => {
   const toast = useToast();
   const { user } = usePrivy();
-  const smartWallet = user?.linkedAccounts.find(
-    (account) => account.type === "smart_wallet"
-  );
   const { client } = useSmartWallets();
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -36,7 +33,7 @@ const TokenBox = () => {
         address: ERC20AirdropAddress,
         abi: ERC20AirdropABI,
         functionName: "balanceOf",
-        args: [smartWallet?.address as `0x${string}`],
+        args: [client?.account.address as `0x${string}`],
       });
 
       return data;
@@ -51,7 +48,7 @@ const TokenBox = () => {
         address: ERC20AirdropAddress,
         abi: ERC20AirdropABI,
         functionName: "airdropRecievedCount",
-        args: [smartWallet?.address as `0x${string}`],
+        args: [client?.account.address as `0x${string}`],
       });
 
       return data;
@@ -61,21 +58,21 @@ const TokenBox = () => {
   }, [publicClient]);
 
   const { data: balanceOf } = useQuery({
-    queryKey: ["balanceOf", smartWallet?.address],
+    queryKey: ["balanceOf", client?.account.address],
     queryFn: readBalanceOf,
     refetchInterval: 3000, // 3 seconds
-    enabled: !!smartWallet?.address,
+    enabled: !!client?.account.address,
   });
 
   const { data: airdropReceivedCount } = useQuery({
-    queryKey: ["airdropReceivedCount", smartWallet?.address],
+    queryKey: ["airdropReceivedCount", client?.account.address],
     queryFn: readAirdropReceivedCount,
     refetchInterval: 3000, // 3 seconds
-    enabled: !!smartWallet?.address,
+    enabled: !!client?.account.address,
   });
 
   const handleAirdrop = useCallback(async () => {
-    if (!smartWallet) {
+    if (!client) {
       toast({
         title: "Smart Account not found",
         status: "error",
@@ -120,7 +117,7 @@ const TokenBox = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [smartWallet?.address]);
+  }, [client]);
 
   return (
     <Stack bg="gray.100" p={4} spacing={4} borderRadius="md">
@@ -135,11 +132,11 @@ const TokenBox = () => {
       <Divider />
       <Text fontWeight="bold">Smart Account Address</Text>
       <Link
-        href={`${BaseSepoliaEtherscanUrl}/address/${smartWallet?.address}`}
+        href={`${BaseSepoliaEtherscanUrl}/address/${client?.account.address}`}
         target="_blank"
         rel="noopener noreferrer"
       >
-        {smartWallet?.address}
+        {client?.account.address}
       </Link>
       <Text fontWeight="bold">Smart Account Balance</Text>
       <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
@@ -161,7 +158,7 @@ const TokenBox = () => {
         colorScheme="blue"
         isLoading={isLoading}
         isDisabled={
-          airdropReceivedCount === BigInt(5) || !smartWallet || !client
+          airdropReceivedCount === BigInt(5) || !client?.account.address
         }
       >
         Airdrop
