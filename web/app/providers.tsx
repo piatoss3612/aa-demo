@@ -4,7 +4,8 @@ import * as React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { BiconomyProvider } from "@/context/BiconomyContext";
+import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
+import { baseSepolia } from "viem/chains";
 
 const queryClient = new QueryClient();
 
@@ -20,19 +21,36 @@ export function Providers({ children }: { children: React.ReactNode }) {
           accentColor: "#676FFF",
           logo: "https://your-logo-url",
         },
+        defaultChain: baseSepolia,
+        supportedChains: [baseSepolia],
         // Create embedded wallets for users who don't have a wallet
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
         },
       }}
     >
-      <ChakraProvider>
-        <BiconomyProvider>
+      <SmartWalletsProvider
+        config={{
+          paymasterContext: {
+            mode: "SPONSORED",
+            calculateGasLimits: true,
+            expiryDuration: 300,
+            sponsorshipInfo: {
+              webhookData: {},
+              smartAccountInfo: {
+                name: "BICONOMY",
+                version: "2.0.0",
+              },
+            },
+          },
+        }}
+      >
+        <ChakraProvider>
           <QueryClientProvider client={queryClient}>
             {mounted && children}
           </QueryClientProvider>
-        </BiconomyProvider>
-      </ChakraProvider>
+        </ChakraProvider>
+      </SmartWalletsProvider>
     </PrivyProvider>
   );
 }

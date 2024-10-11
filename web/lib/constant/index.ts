@@ -1,4 +1,4 @@
-const SepoliaEtherScanUrl = "https://sepolia.etherscan.io";
-const ERC20AirdropAddress = "0xf7867F6C6E1d3a77F00F911a47b5842ff3fc4516";
+const BaseSepoliaEtherscanUrl = "https://sepolia.basescan.org";
+const ERC20AirdropAddress = "0xCFdb9e4A105CB0aF8d0F8ab92F56f4D535754AF9";
 
-export { SepoliaEtherScanUrl, ERC20AirdropAddress };
+export { BaseSepoliaEtherscanUrl, ERC20AirdropAddress };

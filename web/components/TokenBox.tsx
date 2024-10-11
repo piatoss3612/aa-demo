@@ -1,11 +1,10 @@
 "use client";
 
-import useBiconomy from "@/hooks/useBiconomy";
 import ERC20AirdropABI from "@/lib/abi/ERC20Airdrop";
-import { ERC20AirdropAddress, SepoliaEtherScanUrl } from "@/lib/constant";
-import { PaymasterMode, SponsorUserOperationDto } from "@biconomy/paymaster";
+import { BaseSepoliaEtherscanUrl, ERC20AirdropAddress } from "@/lib/constant";
 import { Button, Divider, Link, Stack, Text, useToast } from "@chakra-ui/react";
 import { usePrivy } from "@privy-io/react-auth";
+import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useState } from "react";
 import {
@@ -15,16 +14,20 @@ import {
   http,
   parseEther,
 } from "viem";
-import { sepolia } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 
 const TokenBox = () => {
   const toast = useToast();
   const { user } = usePrivy();
-  const { smartAccount, smartAccountAddress } = useBiconomy();
+  const smartWallet = user?.linkedAccounts.find(
+    (account) => account.type === "smart_wallet"
+  );
+  const { client } = useSmartWallets();
   const [isLoading, setIsLoading] = useState(false);
+  const [txHash, setTxHash] = useState<string | null>(null);
 
   const publicClient = createPublicClient({
-    chain: sepolia,
+    chain: baseSepolia,
     transport: http(),
   });
 
@@ -34,7 +37,7 @@ const TokenBox = () => {
         address: ERC20AirdropAddress,
         abi: ERC20AirdropABI,
         functionName: "balanceOf",
-        args: [smartAccountAddress as `0x${string}`],
+        args: [smartWallet?.address as `0x${string}`],
       });
 
       return data;
@@ -43,13 +46,13 @@ const TokenBox = () => {
     }
   }, [publicClient]);
 
-  const readAirdropReceived = useCallback(async () => {
+  const readAirdropReceivedCount = useCallback(async () => {
     try {
       const data = await publicClient.readContract({
         address: ERC20AirdropAddress,
         abi: ERC20AirdropABI,
-        functionName: "airdropRecieved",
-        args: [smartAccountAddress as `0x${string}`],
+        functionName: "airdropRecievedCount",
+        args: [smartWallet?.address as `0x${string}`],
       });
 
       return data;
@@ -59,25 +62,28 @@ const TokenBox = () => {
   }, [publicClient]);
 
   const { data: balanceOf } = useQuery({
-    queryKey: ["balanceOf", smartAccountAddress],
+    queryKey: ["balanceOf", smartWallet?.address],
     queryFn: readBalanceOf,
     refetchInterval: 3000, // 3 seconds
+    enabled: !!smartWallet?.address,
   });
 
-  const { data: airdropReceived } = useQuery({
-    queryKey: ["airdropReceived", smartAccountAddress],
-    queryFn: readAirdropReceived,
+  const { data: airdropReceivedCount } = useQuery({
+    queryKey: ["airdropReceivedCount", smartWallet?.address],
+    queryFn: readAirdropReceivedCount,
     refetchInterval: 3000, // 3 seconds
+    enabled: !!smartWallet?.address,
   });
 
   const handleAirdrop = useCallback(async () => {
-    if (!smartAccount || !smartAccountAddress) {
+    if (!smartWallet) {
       toast({
         title: "Smart Account not found",
         status: "error",
         duration: 3000,
         isClosable: true,
       });
+      return;
     }
 
     try {
@@ -89,27 +95,20 @@ const TokenBox = () => {
       });
 
       const tx = {
-        to: ERC20AirdropAddress,
+        to: ERC20AirdropAddress as `0x${string}`,
         data,
       };
 
-      const airdropOpResponse = await smartAccount?.sendTransaction(tx, {
-        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      const txHash = await client?.sendTransaction({
+        account: client.account,
+        calls: [tx],
       });
 
-      const { transactionHash } = await airdropOpResponse?.waitForTxHash()!;
-
-      if (!transactionHash) {
+      if (!txHash) {
         throw new Error("Transaction hash not found");
       }
 
-      toast({
-        title: "Airdropping tokens",
-        description: `https://sepolia.etherscan.io/tx/${transactionHash}`,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+      setTxHash(txHash);
     } catch (error) {
       console.error(error);
       toast({
@@ -122,13 +121,13 @@ const TokenBox = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [smartAccount, smartAccountAddress]);
+  }, [smartWallet?.address]);
 
   return (
     <Stack bg="gray.100" p={4} spacing={4} borderRadius="md">
       <Text fontWeight="bold">User Address</Text>
       <Link
-        href={`${SepoliaEtherScanUrl}/address/${user?.wallet?.address}`}
+        href={`${BaseSepoliaEtherscanUrl}/address/${user?.wallet?.address}`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -137,20 +136,34 @@ const TokenBox = () => {
       <Divider />
       <Text fontWeight="bold">Smart Account Address</Text>
       <Link
-        href={`${SepoliaEtherScanUrl}/address/${smartAccountAddress}`}
+        href={`${BaseSepoliaEtherscanUrl}/address/${smartWallet?.address}`}
         target="_blank"
         rel="noopener noreferrer"
       >
-        {smartAccountAddress}
+        {smartWallet?.address}
       </Link>
       <Text fontWeight="bold">Smart Account Balance</Text>
       <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
+      {txHash && (
+        <>
+          <Text fontWeight="bold">Transaction Hash</Text>
+          <Link
+            href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {txHash}
+          </Link>
+        </>
+      )}
       <Divider />
       <Button
         onClick={handleAirdrop}
         colorScheme="blue"
         isLoading={isLoading}
-        isDisabled={airdropReceived}
+        isDisabled={
+          airdropReceivedCount === BigInt(5) || !smartWallet || !client
+        }
       >
         Airdrop
       </Button>

@@ -1,20 +1,17 @@
 const ERC20AirdropABI = [
-  {
-    type: "constructor",
-    inputs: [],
-    stateMutability: "nonpayable",
-  },
+  { type: "constructor", inputs: [], stateMutability: "nonpayable" },
   {
     type: "function",
     name: "AIRDROP_AMOUNT",
     inputs: [],
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "AIRDROP_LIMIT_COUNT",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
   },
   {
@@ -26,193 +23,85 @@ const ERC20AirdropABI = [
   },
   {
     type: "function",
-    name: "airdropRecieved",
-    inputs: [
-      {
-        name: "",
-        type: "address",
-        internalType: "address",
-      },
-    ],
-    outputs: [
-      {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
-    ],
+    name: "airdropRecievedCount",
+    inputs: [{ name: "", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "allowance",
     inputs: [
-      {
-        name: "owner",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "spender",
-        type: "address",
-        internalType: "address",
-      },
+      { name: "owner", type: "address", internalType: "address" },
+      { name: "spender", type: "address", internalType: "address" },
     ],
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "approve",
     inputs: [
-      {
-        name: "spender",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "value",
-        type: "uint256",
-        internalType: "uint256",
-      },
+      { name: "spender", type: "address", internalType: "address" },
+      { name: "value", type: "uint256", internalType: "uint256" },
     ],
-    outputs: [
-      {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
-    ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "nonpayable",
   },
   {
     type: "function",
     name: "balanceOf",
-    inputs: [
-      {
-        name: "account",
-        type: "address",
-        internalType: "address",
-      },
-    ],
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
+    inputs: [{ name: "account", type: "address", internalType: "address" }],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "decimals",
     inputs: [],
-    outputs: [
-      {
-        name: "",
-        type: "uint8",
-        internalType: "uint8",
-      },
-    ],
+    outputs: [{ name: "", type: "uint8", internalType: "uint8" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "name",
     inputs: [],
-    outputs: [
-      {
-        name: "",
-        type: "string",
-        internalType: "string",
-      },
-    ],
+    outputs: [{ name: "", type: "string", internalType: "string" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "symbol",
     inputs: [],
-    outputs: [
-      {
-        name: "",
-        type: "string",
-        internalType: "string",
-      },
-    ],
+    outputs: [{ name: "", type: "string", internalType: "string" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "totalSupply",
     inputs: [],
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-        internalType: "uint256",
-      },
-    ],
+    outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",
   },
   {
     type: "function",
     name: "transfer",
     inputs: [
-      {
-        name: "to",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "value",
-        type: "uint256",
-        internalType: "uint256",
-      },
+      { name: "to", type: "address", internalType: "address" },
+      { name: "value", type: "uint256", internalType: "uint256" },
     ],
-    outputs: [
-      {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
-    ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "nonpayable",
   },
   {
     type: "function",
     name: "transferFrom",
     inputs: [
-      {
-        name: "from",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "to",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "value",
-        type: "uint256",
-        internalType: "uint256",
-      },
+      { name: "from", type: "address", internalType: "address" },
+      { name: "to", type: "address", internalType: "address" },
+      { name: "value", type: "uint256", internalType: "uint256" },
     ],
-    outputs: [
-      {
-        name: "",
-        type: "bool",
-        internalType: "bool",
-      },
-    ],
+    outputs: [{ name: "", type: "bool", internalType: "bool" }],
     stateMutability: "nonpayable",
   },
   {
@@ -284,96 +173,44 @@ const ERC20AirdropABI = [
     ],
     anonymous: false,
   },
-  {
-    type: "error",
-    name: "AirdropAlreadyRecieved",
-    inputs: [],
-  },
+  { type: "error", name: "AirdropLimitExceeded", inputs: [] },
   {
     type: "error",
     name: "ERC20InsufficientAllowance",
     inputs: [
-      {
-        name: "spender",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "allowance",
-        type: "uint256",
-        internalType: "uint256",
-      },
-      {
-        name: "needed",
-        type: "uint256",
-        internalType: "uint256",
-      },
+      { name: "spender", type: "address", internalType: "address" },
+      { name: "allowance", type: "uint256", internalType: "uint256" },
+      { name: "needed", type: "uint256", internalType: "uint256" },
     ],
   },
   {
     type: "error",
     name: "ERC20InsufficientBalance",
     inputs: [
-      {
-        name: "sender",
-        type: "address",
-        internalType: "address",
-      },
-      {
-        name: "balance",
-        type: "uint256",
-        internalType: "uint256",
-      },
-      {
-        name: "needed",
-        type: "uint256",
-        internalType: "uint256",
-      },
+      { name: "sender", type: "address", internalType: "address" },
+      { name: "balance", type: "uint256", internalType: "uint256" },
+      { name: "needed", type: "uint256", internalType: "uint256" },
     ],
   },
   {
     type: "error",
     name: "ERC20InvalidApprover",
-    inputs: [
-      {
-        name: "approver",
-        type: "address",
-        internalType: "address",
-      },
-    ],
+    inputs: [{ name: "approver", type: "address", internalType: "address" }],
   },
   {
     type: "error",
     name: "ERC20InvalidReceiver",
-    inputs: [
-      {
-        name: "receiver",
-        type: "address",
-        internalType: "address",
-      },
-    ],
+    inputs: [{ name: "receiver", type: "address", internalType: "address" }],
   },
   {
     type: "error",
     name: "ERC20InvalidSender",
-    inputs: [
-      {
-        name: "sender",
-        type: "address",
-        internalType: "address",
-      },
-    ],
+    inputs: [{ name: "sender", type: "address", internalType: "address" }],
   },
   {
     type: "error",
     name: "ERC20InvalidSpender",
-    inputs: [
-      {
-        name: "spender",
-        type: "address",
-        internalType: "address",
-      },
-    ],
+    inputs: [{ name: "spender", type: "address", internalType: "address" }],
   },
 ] as const;
 
