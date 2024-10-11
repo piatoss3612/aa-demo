@@ -12,7 +12,6 @@ import {
   encodeFunctionData,
   formatEther,
   http,
-  parseEther,
 } from "viem";
 import { baseSepolia } from "viem/chains";
 
