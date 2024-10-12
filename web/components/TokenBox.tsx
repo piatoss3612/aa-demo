@@ -2,8 +2,20 @@
 
 import ERC20AirdropABI from "@/lib/abi/ERC20Airdrop";
 import { BaseSepoliaEtherscanUrl, ERC20AirdropAddress } from "@/lib/constant";
-import { Button, Divider, Link, Stack, Text, useToast } from "@chakra-ui/react";
-import { usePrivy } from "@privy-io/react-auth";
+import {
+  Button,
+  Divider,
+  Link,
+  SimpleGrid,
+  Stack,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import {
+  usePrivy,
+  useMfaEnrollment,
+  useFundWallet,
+} from "@privy-io/react-auth";
 import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useState } from "react";
@@ -13,11 +25,13 @@ import {
   formatEther,
   http,
 } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 
 const TokenBox = () => {
   const toast = useToast();
-  const { user } = usePrivy();
+  const { user, setWalletRecovery, exportWallet } = usePrivy();
+  const { showMfaEnrollmentModal } = useMfaEnrollment();
+  const { fundWallet } = useFundWallet();
   const { client } = useSmartWallets();
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -47,7 +61,7 @@ const TokenBox = () => {
       const data = await publicClient.readContract({
         address: ERC20AirdropAddress,
         abi: ERC20AirdropABI,
-        functionName: "airdropRecievedCount",
+        functionName: "airdropReceivedCount",
         args: [client?.account.address as `0x${string}`],
       });
 
@@ -56,6 +70,13 @@ const TokenBox = () => {
       console.error(error);
     }
   }, [publicClient]);
+
+  const fundSmartAccount = useCallback(async () => {
+    fundWallet(client?.account.address as `0x${string}`, {
+      chain: base,
+      amount: "0.01",
+    });
+  }, [client]);
 
   const { data: balanceOf } = useQuery({
     queryKey: ["balanceOf", client?.account.address],
@@ -70,6 +91,8 @@ const TokenBox = () => {
     refetchInterval: 3000, // 3 seconds
     enabled: !!client?.account.address,
   });
+
+  const fullAirdropReceived = airdropReceivedCount === BigInt(5);
 
   const handleAirdrop = useCallback(async () => {
     if (!client) {
@@ -120,50 +143,69 @@ const TokenBox = () => {
   }, [client]);
 
   return (
-    <Stack bg="gray.100" p={4} spacing={4} borderRadius="md">
-      <Text fontWeight="bold">User Address</Text>
-      <Link
-        href={`${BaseSepoliaEtherscanUrl}/address/${user?.wallet?.address}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {user?.wallet?.address}
-      </Link>
-      <Divider />
-      <Text fontWeight="bold">Smart Account Address</Text>
-      <Link
-        href={`${BaseSepoliaEtherscanUrl}/address/${client?.account.address}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {client?.account.address}
-      </Link>
-      <Text fontWeight="bold">Smart Account Balance</Text>
-      <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
-      {txHash && (
-        <>
-          <Text fontWeight="bold">Transaction Hash</Text>
-          <Link
-            href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {txHash}
-          </Link>
-        </>
-      )}
-      <Divider />
-      <Button
-        onClick={handleAirdrop}
-        colorScheme="blue"
-        isLoading={isLoading}
-        isDisabled={
-          airdropReceivedCount === BigInt(5) || !client?.account.address
-        }
-      >
-        Airdrop
-      </Button>
-    </Stack>
+    <>
+      <Stack bg="gray.100" p={4} spacing={4} borderRadius="md">
+        <Text fontWeight="bold">User Address</Text>
+        <Link
+          href={`${BaseSepoliaEtherscanUrl}/address/${user?.wallet?.address}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {user?.wallet?.address}
+        </Link>
+        <Divider />
+        <Text fontWeight="bold">Smart Account Address</Text>
+        <Link
+          href={`${BaseSepoliaEtherscanUrl}/address/${client?.account.address}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {client?.account.address}
+        </Link>
+        <Text fontWeight="bold">Smart Account Balance</Text>
+        <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
+        {txHash && (
+          <>
+            <Text fontWeight="bold">Transaction Hash</Text>
+            <Link
+              href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {txHash}
+            </Link>
+          </>
+        )}
+        <Divider />
+        <Button
+          onClick={handleAirdrop}
+          colorScheme="blue"
+          isLoading={isLoading}
+          isDisabled={fullAirdropReceived || !client?.account.address}
+        >
+          {fullAirdropReceived ? "Fully Airdropped" : "Airdrop"}
+        </Button>
+      </Stack>
+      <Stack bg="gray.100" p={4} spacing={4} borderRadius="md" align="center">
+        <Text fontSize="lg" fontWeight="bold">
+          Actions
+        </Text>
+        <SimpleGrid columns={2} spacing={4}>
+          <Button colorScheme="blue" onClick={setWalletRecovery}>
+            Set Wallet Recovery
+          </Button>
+          <Button colorScheme="blue" onClick={showMfaEnrollmentModal}>
+            Enroll MFA
+          </Button>
+          <Button colorScheme="blue" onClick={exportWallet}>
+            Export Wallet
+          </Button>
+          <Button colorScheme="blue" onClick={fundSmartAccount}>
+            Fund Wallet
+          </Button>
+        </SimpleGrid>
+      </Stack>
+    </>
   );
 };
 

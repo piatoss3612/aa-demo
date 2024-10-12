@@ -23,7 +23,7 @@ const ERC20AirdropABI = [
   },
   {
     type: "function",
-    name: "airdropRecievedCount",
+    name: "airdropReceivedCount",
     inputs: [{ name: "", type: "address", internalType: "address" }],
     outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
     stateMutability: "view",

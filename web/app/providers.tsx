@@ -5,7 +5,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 
 const queryClient = new QueryClient();
 
@@ -22,10 +22,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
           logo: "https://your-logo-url",
         },
         defaultChain: baseSepolia,
-        supportedChains: [baseSepolia],
+        supportedChains: [base, baseSepolia],
         // Create embedded wallets for users who don't have a wallet
         embeddedWallets: {
           createOnLogin: "users-without-wallets",
+        },
+        fundingMethodConfig: {
+          moonpay: {
+            paymentMethod: "credit_debit_card",
+          },
         },
       }}
     >

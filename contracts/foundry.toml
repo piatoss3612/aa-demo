@@ -6,5 +6,9 @@ remappings = ["@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/"]
 
 [rpc_endpoints]
 sepolia = "https://ethereum-sepolia-rpc.publicnode.com"
-base-sepolia="https://base-sepolia-rpc.publicnode.com"
+base-sepolia = "https://base-sepolia-rpc.publicnode.com"
+
+[etherscan]
+base-sepolia = { key = "${BASE_SCAN_API_KEY}", url = "https://api-sepolia.basescan.org/api" }
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

@@ -1,7 +1,7 @@
 {
   "transactions": [
     {
-      "hash": "0x30c26b358699a4095bc764d64b60ec4e82beecab24c41924715ae5a1bae0077f",
+      "hash": null,
       "transactionType": "CREATE",
       "contractName": "ERC20Airdrop",
       "contractAddress": "0xa7Fc2E3041aD9ae62aC8762522E831D21e906ED7",
@@ -19,34 +19,11 @@
       "isFixedGasLimit": false
     }
   ],
-  "receipts": [
-    {
-      "status": "0x1",
-      "cumulativeGasUsed": "0x460537",
-      "logs": [],
-      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-      "type": "0x2",
-      "transactionHash": "0x30c26b358699a4095bc764d64b60ec4e82beecab24c41924715ae5a1bae0077f",
-      "transactionIndex": "0x1f",
-      "blockHash": "0xb40fb6b27af2e3ba0071c120387aed3fe1b0686ace0a7d699f7163cebc7ecf67",
-      "blockNumber": "0xfb764c",
-      "gasUsed": "0x8dd8f",
-      "effectiveGasPrice": "0xd19b3e7",
-      "from": "0x965B0E63e00E7805569ee3B428Cf96330DFc57EF",
-      "to": null,
-      "contractAddress": "0xa7Fc2E3041aD9ae62aC8762522E831D21e906ED7",
-      "l1BaseFeeScalar": "0x44d",
-      "l1BlobBaseFee": "0x1",
-      "l1BlobBaseFeeScalar": "0xa118b",
-      "l1Fee": "0x52a0489443",
-      "l1GasPrice": "0x2c4d36863",
-      "l1GasUsed": "0x69df"
-    }
-  ],
+  "receipts": [],
   "libraries": [],
   "pending": [],
   "returns": {},
-  "timestamp": 1728727951,
+  "timestamp": 1728727872,
   "chain": 84532,
   "commit": "340137f"
 }
