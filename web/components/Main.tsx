@@ -21,8 +21,9 @@ const Main = () => {
       direction="column"
       alignItems="center"
       justifyContent="center"
+      p={8}
     >
-      <Button onClick={logout} isLoading={!ready}>
+      <Button onClick={logout} isLoading={!ready} colorScheme="red">
         Logout
       </Button>
       <TokenBox />

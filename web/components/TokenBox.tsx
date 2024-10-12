@@ -5,6 +5,9 @@ import { BaseSepoliaEtherscanUrl, ERC20AirdropAddress } from "@/lib/constant";
 import {
   Button,
   Divider,
+  FormControl,
+  FormLabel,
+  Input,
   Link,
   SimpleGrid,
   Stack,
@@ -33,6 +36,8 @@ const TokenBox = () => {
   const { showMfaEnrollmentModal } = useMfaEnrollment();
   const { fundWallet } = useFundWallet();
   const { client } = useSmartWallets();
+  const [toAddress, setToAddress] = useState<`0x${string}`>("0x");
+  const [amount, setAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
 
@@ -94,6 +99,14 @@ const TokenBox = () => {
 
   const fullAirdropReceived = airdropReceivedCount === BigInt(5);
 
+  const handleToAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setToAddress(e.target.value as `0x${string}`);
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(e.target.value);
+  };
+
   const handleAirdrop = useCallback(async () => {
     if (!client) {
       toast({
@@ -132,7 +145,7 @@ const TokenBox = () => {
       console.error(error);
       toast({
         title: "Error airdropping tokens",
-
+        description: error instanceof Error ? error.message : String(error),
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -142,9 +155,61 @@ const TokenBox = () => {
     }
   }, [client]);
 
+  const handleTransfer = useCallback(async () => {
+    if (!client) {
+      toast({
+        title: "Smart Account not found",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const data = encodeFunctionData({
+        abi: ERC20AirdropABI,
+        functionName: "transfer",
+        args: [toAddress, BigInt(amount)],
+      });
+
+      const tx = {
+        to: ERC20AirdropAddress as `0x${string}`,
+        data,
+      };
+
+      const txHash = await client?.sendTransaction({
+        account: client.account,
+        calls: [tx],
+      });
+
+      if (!txHash) {
+        throw new Error("Transaction hash not found");
+      }
+
+      setTxHash(txHash);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error transferring tokens",
+        description: error instanceof Error ? error.message : String(error),
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [client, toAddress, amount]);
+
   return (
     <>
-      <Stack bg="gray.100" p={4} spacing={4} borderRadius="md">
+      <Stack
+        bg="gray.100"
+        p={4}
+        spacing={4}
+        borderRadius="md"
+        minW={"480px"}
+        maxW={"480px"}
+      >
         <Text fontWeight="bold">User Address</Text>
         <Link
           href={`${BaseSepoliaEtherscanUrl}/address/${user?.wallet?.address}`}
@@ -162,20 +227,8 @@ const TokenBox = () => {
         >
           {client?.account.address}
         </Link>
-        <Text fontWeight="bold">Smart Account Balance</Text>
+        <Text fontWeight="bold">ADT Balance</Text>
         <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
-        {txHash && (
-          <>
-            <Text fontWeight="bold">Transaction Hash</Text>
-            <Link
-              href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {txHash}
-            </Link>
-          </>
-        )}
         <Divider />
         <Button
           onClick={handleAirdrop}
@@ -185,12 +238,61 @@ const TokenBox = () => {
         >
           {fullAirdropReceived ? "Fully Airdropped" : "Airdrop"}
         </Button>
+        <Divider />
+        <Text fontWeight="bold">Transfer</Text>
+        <FormControl>
+          <FormLabel>To Address</FormLabel>
+          <Input
+            type="text"
+            placeholder="To Address"
+            value={toAddress}
+            onChange={handleToAddressChange}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Amount</FormLabel>
+          <Input
+            type="text"
+            placeholder="Amount without decimals"
+            value={amount}
+            onChange={handleAmountChange}
+          />
+        </FormControl>
+        <Button
+          onClick={handleTransfer}
+          colorScheme="blue"
+          isDisabled={!client?.account.address}
+        >
+          Transfer
+        </Button>
+        {txHash && (
+          <>
+            <Divider />
+            <Text fontWeight="bold">Transaction Hash</Text>
+            <Link
+              noOfLines={1}
+              href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {txHash}
+            </Link>
+          </>
+        )}
       </Stack>
-      <Stack bg="gray.100" p={4} spacing={4} borderRadius="md" align="center">
+      <Stack
+        bg="gray.100"
+        p={4}
+        spacing={4}
+        borderRadius="md"
+        align="center"
+        minW={"480px"}
+        maxW={"480px"}
+      >
         <Text fontSize="lg" fontWeight="bold">
           Actions
         </Text>
-        <SimpleGrid columns={2} spacing={4}>
+        <SimpleGrid columns={2} spacing={4} w="full">
           <Button colorScheme="blue" onClick={setWalletRecovery}>
             Set Wallet Recovery
           </Button>
