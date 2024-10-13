@@ -1,8 +1,17 @@
 "use client";
 
-import { Button, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Stack,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+} from "@chakra-ui/react";
 import { usePrivy } from "@privy-io/react-auth";
-import TokenBox from "./TokenBox";
+import BaseSepoliaBox from "./BaseSepoliaBox";
+import SolanaBox from "./SolanaBox";
 
 const Main = () => {
   const { ready, authenticated, login, logout } = usePrivy();
@@ -21,12 +30,26 @@ const Main = () => {
       direction="column"
       alignItems="center"
       justifyContent="center"
+      maxW={"480px"}
       p={8}
     >
       <Button onClick={logout} isLoading={!ready} colorScheme="red">
         Logout
       </Button>
-      <TokenBox />
+      <Tabs size="md" variant="soft-rounded" colorScheme="blue" isFitted={true}>
+        <TabList>
+          <Tab>Base Sepolia</Tab>
+          <Tab>Solana Devnet</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <BaseSepoliaBox />
+          </TabPanel>
+          <TabPanel>
+            <SolanaBox />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Stack>
   );
 };

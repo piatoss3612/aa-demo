@@ -1,5 +1,3 @@
-"use client";
-
 import ERC20AirdropABI from "@/lib/abi/ERC20Airdrop";
 import { BaseSepoliaEtherscanUrl, ERC20AirdropAddress } from "@/lib/constant";
 import {
@@ -30,7 +28,7 @@ import {
 } from "viem";
 import { base, baseSepolia } from "viem/chains";
 
-const TokenBox = () => {
+const BaseSepoliaBox = () => {
   const toast = useToast();
   const { user, setWalletRecovery, exportWallet } = usePrivy();
   const { showMfaEnrollmentModal } = useMfaEnrollment();
@@ -209,6 +207,7 @@ const TokenBox = () => {
         borderRadius="md"
         minW={"480px"}
         maxW={"480px"}
+        mb={4}
       >
         <Text fontWeight="bold">User Address</Text>
         <Link
@@ -229,7 +228,6 @@ const TokenBox = () => {
         </Link>
         <Text fontWeight="bold">ADT Balance</Text>
         <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
-        <Divider />
         <Button
           onClick={handleAirdrop}
           colorScheme="blue"
@@ -311,4 +309,4 @@ const TokenBox = () => {
   );
 };
 
-export default TokenBox;
+export default BaseSepoliaBox;
