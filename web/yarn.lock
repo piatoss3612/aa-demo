@@ -1717,17 +1717,17 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
-"@privy-io/api-base@1.3.1", "@privy-io/api-base@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@privy-io/api-base/-/api-base-1.3.1.tgz#5affe7db67734d8078a17587054f73eee930e322"
-  integrity sha512-Sp0ZuV46a8xNneXgXixwhvlyoWTRVSN7meji8m5RDw9JpLCidujsRvihclYuy3eg0ikk1BQnP3+l/Mau8X28xQ==
+"@privy-io/api-base@1.3.2", "@privy-io/api-base@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@privy-io/api-base/-/api-base-1.3.2.tgz#ac7dc266136302ab693a1b29b8ac5f5d7e2bb494"
+  integrity sha512-DjfECWu/YhI5WGnUtdzvQnnj7JVCtSh+hbgIX0zjybvjKGt7mI41cUSvHhgr613so7tupbklJeUSXqIsIt66tw==
   dependencies:
     zod "^3.21.4"
 
-"@privy-io/js-sdk-core@0.28.8":
-  version "0.28.8"
-  resolved "https://registry.yarnpkg.com/@privy-io/js-sdk-core/-/js-sdk-core-0.28.8.tgz#f595153562ff841b14706b735041ba3434b4afe4"
-  integrity sha512-YfaoNstfvX9pHTnfTsDzhws2CaRZU/Wp8xHdlNuQY5lz+LV0U1nKquXP3WO7Rgc2amupQUwTBkAFr8fwmzEIAA==
+"@privy-io/js-sdk-core@0.29.3":
+  version "0.29.3"
+  resolved "https://registry.yarnpkg.com/@privy-io/js-sdk-core/-/js-sdk-core-0.29.3.tgz#aa2a88945e2507e3e4c76145bb86623c1e49439f"
+  integrity sha512-H/PzqFwSRcURbLKhCnE+GuVLTD7ADH5hLqYuN8Nt22wPo1BGP0CA8rL4kxoFeaq+PfcITcz2PjM0eCDJRnJVGA==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/bignumber" "^5.7.0"
@@ -1735,8 +1735,8 @@
     "@ethersproject/providers" "^5.7.2"
     "@ethersproject/transactions" "^5.7.0"
     "@ethersproject/units" "^5.7.0"
-    "@privy-io/api-base" "^1.3.1"
-    "@privy-io/public-api" "2.10.5"
+    "@privy-io/api-base" "^1.3.2"
+    "@privy-io/public-api" "2.11.2"
     eventemitter3 "^5.0.1"
     fetch-retry "^5.0.6"
     jose "^4.15.5"
@@ -1745,21 +1745,21 @@
     set-cookie-parser "^2.6.0"
     uuid ">=8 <10"
 
-"@privy-io/public-api@2.10.5":
-  version "2.10.5"
-  resolved "https://registry.yarnpkg.com/@privy-io/public-api/-/public-api-2.10.5.tgz#ce49d828b13bd4dd786c77a41e2de307cb94b747"
-  integrity sha512-UwL9WEb2C/mxxVGcuUJGXurCO3XJkFfhs2xa2y55uS0CTcynzZBqFL31FH8Wdb7Hr36DZewSX1MvIFdqc2SH5A==
+"@privy-io/public-api@2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@privy-io/public-api/-/public-api-2.11.2.tgz#d2139f4e2a71e7b113c6f1c62077d9d0a055c2df"
+  integrity sha512-LnJJXXcaKAOgDO7OOggKpYQbBXzytEKoRMfv7+HdWdADnp5CApYossaa6N39E8aDLNlNhRLRW0TO9qgQvuM9sQ==
   dependencies:
-    "@privy-io/api-base" "1.3.1"
+    "@privy-io/api-base" "1.3.2"
     bs58 "^5.0.0"
     ethers "^5.7.2"
     libphonenumber-js "^1.10.31"
     zod "^3.22.4"
 
-"@privy-io/react-auth@^1.89.0":
-  version "1.89.0"
-  resolved "https://registry.yarnpkg.com/@privy-io/react-auth/-/react-auth-1.89.0.tgz#94dd05ec2ff9c6ed5ab92b8a1c52d87222e33e5f"
-  integrity sha512-4kEMTk46SoC+ukM59petrYaqoQDg6woPF5VNDTTYT0Uegnj5SJodp8ylhz+jq0fbGVOfTn9Ppxp0amVOBOEWXg==
+"@privy-io/react-auth@^1.92.2":
+  version "1.92.2"
+  resolved "https://registry.yarnpkg.com/@privy-io/react-auth/-/react-auth-1.92.2.tgz#d69809d7c47da8196c8df3bd29ea797b26b61e17"
+  integrity sha512-0VDuDzbH/rap+6SQU3OU3yuNoGXweq46rAiEI7Xs9C8IzchOgJyLBGImoJSpgPHfPH4noF2T1kA8ZX7hO+xQgw==
   dependencies:
     "@coinbase/wallet-sdk" "4.0.3"
     "@ethersproject/abstract-signer" "^5.7.0"
@@ -1777,7 +1777,7 @@
     "@heroicons/react" "^2.1.1"
     "@marsidev/react-turnstile" "^0.4.1"
     "@metamask/eth-sig-util" "^6.0.0"
-    "@privy-io/js-sdk-core" "0.28.8"
+    "@privy-io/js-sdk-core" "0.29.3"
     "@simplewebauthn/browser" "^9.0.1"
     "@solana/wallet-adapter-base" "^0.9.23"
     "@solana/wallet-standard-wallet-adapter-base" "^1.1.2"
@@ -1796,7 +1796,7 @@
     md5 "^2.3.0"
     mipd "^0.0.7"
     ofetch "^1.3.4"
-    permissionless "^0.2.1"
+    permissionless "^0.2.10"
     pino-pretty "^10.0.0"
     qrcode "^1.5.1"
     react-device-detect "^2.2.2"
@@ -4314,10 +4314,10 @@ pathe@^1.1.0, pathe@^1.1.1, pathe@^1.1.2:
   resolved "https://registry.yarnpkg.com/pathe/-/pathe-1.1.2.tgz#6c4cb47a945692e48a1ddd6e4094d170516437ec"
   integrity sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==
 
-permissionless@^0.2.1:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/permissionless/-/permissionless-0.2.7.tgz#1907b18f7057cf222233290736e145506b32cb90"
-  integrity sha512-VWMcdZLe4Z/DDWVMxA80u8b083nyqqdN68biZ3L3R36rxn0O2rn0l8XcqiCUkHGOwXFm0DrNzX25WW8G73Bp7w==
+permissionless@^0.2.10:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/permissionless/-/permissionless-0.2.10.tgz#7b0bb8ad61a43f76b8ba2021f7c7ce2b09283a15"
+  integrity sha512-l05ORtPTLo1B+36eHXSIsRAxHvUvsD9i2t12524NaWuwgAM8SMQX99FNWOQwNRb3oVIeYMXCygDXDdvyqwvNzA==
 
 picocolors@^1.0.0:
   version "1.0.0"
