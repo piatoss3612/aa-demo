@@ -40,10 +40,14 @@ export const HeapAnalyticsProvider = ({
   }, [isLoaded, heap]);
 
   useEffect(() => {
+    if (!window) {
+      return;
+    }
+
     if (window.heap) {
       handleScriptReady();
     }
-  }, [window.heap]);
+  }, [window]);
 
   return (
     <>
