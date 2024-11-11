@@ -6,12 +6,6 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
 import { base, baseSepolia } from "viem/chains";
-import dynamic from "next/dynamic";
-
-const HeapAnalyticsProvider = dynamic(
-  () => import("@/context/heap").then((mod) => mod.HeapAnalyticsProvider),
-  { ssr: false }
-);
 
 const queryClient = new QueryClient();
 
@@ -58,7 +52,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       >
         <ChakraProvider>
           <QueryClientProvider client={queryClient}>
-            <HeapAnalyticsProvider>{mounted && children}</HeapAnalyticsProvider>
+            {mounted && children}
           </QueryClientProvider>
         </ChakraProvider>
       </SmartWalletsProvider>

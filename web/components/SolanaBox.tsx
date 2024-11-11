@@ -1,3 +1,4 @@
+import { useAnalytics } from "@/hooks";
 import { SolanaDevnetFaucetUrl, SolanaExplorerUrl } from "@/lib/constant";
 import {
   Button,
@@ -38,6 +39,8 @@ const SolanaBox = () => {
   const [amount, setAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+
+  const { heap } = useAnalytics();
 
   const wallet = user?.linkedAccounts.find(
     (account): account is WalletWithMetadata =>
@@ -86,6 +89,15 @@ const SolanaBox = () => {
       const fromPk = new PublicKey(solanaWallet.address);
       const toPk = new PublicKey(toAddress);
 
+      if (heap) {
+        heap.track!("transfer_solana", {
+          user_id: user?.id,
+          from_address: fromPk.toString(),
+          to_address: toPk.toString(),
+          amount,
+        });
+      }
+
       const tx = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: fromPk,
@@ -101,9 +113,26 @@ const SolanaBox = () => {
 
       const hash = await solanaWallet.sendTransaction!(tx, connection);
 
+      if (heap) {
+        heap.track!("transfer_solana_success", {
+          user_id: user?.id,
+          from_address: fromPk.toString(),
+          to_address: toPk.toString(),
+          amount,
+          tx_hash: hash,
+        });
+      }
+
       setTxHash(hash);
     } catch (error) {
       console.error(error);
+      if (heap) {
+        heap.track!("failed_transfer_solana", {
+          user_id: user?.id,
+          error: error instanceof Error ? error.message : "",
+        });
+      }
+
       toast({
         title: "Failed to transfer",
         description: error instanceof Error ? error.message : "",
@@ -199,7 +228,37 @@ const SolanaBox = () => {
           </>
         ) : (
           <>
-            <Button colorScheme="blue" onClick={createWallet}>
+            <Button
+              colorScheme="blue"
+              onClick={async () => {
+                try {
+                  if (heap) {
+                    heap.track!("create_solana_wallet", {
+                      user_id: user?.id,
+                    });
+                  }
+
+                  await createWallet();
+                } catch (e) {
+                  const errMessage = e instanceof Error ? e.message : "";
+
+                  if (heap) {
+                    heap.track!("failed_create_solana_wallet", {
+                      user_id: user?.id,
+                      error: errMessage,
+                    });
+                  }
+
+                  toast({
+                    title: "Failed to create wallet",
+                    description: errMessage,
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                  });
+                }
+              }}
+            >
               Create Wallet
             </Button>
           </>

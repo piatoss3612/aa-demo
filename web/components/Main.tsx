@@ -12,9 +12,24 @@ import {
 import { usePrivy } from "@privy-io/react-auth";
 import BaseSepoliaBox from "./BaseSepoliaBox";
 import SolanaBox from "./SolanaBox";
+import { useEffect } from "react";
+import { useAnalytics } from "@/hooks";
 
 const Main = () => {
-  const { ready, authenticated, login, logout } = usePrivy();
+  const { ready, authenticated, user, login, logout } = usePrivy();
+  const { isLoaded, heap } = useAnalytics();
+
+  useEffect(() => {
+    if (isLoaded && heap) {
+      if (user) {
+        heap.identify!(user.id);
+        heap.addUserProperties!({
+          email: user.email,
+          address: user.wallet?.address,
+        });
+      }
+    }
+  }, [isLoaded, heap, user]);
 
   if (!authenticated) {
     return (

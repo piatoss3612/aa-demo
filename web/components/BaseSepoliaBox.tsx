@@ -133,7 +133,7 @@ const BaseSepoliaBox = () => {
       };
 
       if (heap) {
-        heap.track("executed_airdrop", {
+        heap.track!("executed_airdrop", {
           user_id: user?.id,
           smart_account_address: client.account.address,
         });
@@ -149,7 +149,7 @@ const BaseSepoliaBox = () => {
       }
 
       if (heap) {
-        heap.track("completed_airdrop", {
+        heap.track!("completed_airdrop", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           tx_hash: txHash,
@@ -164,7 +164,7 @@ const BaseSepoliaBox = () => {
         error instanceof Error ? error.message : String(error);
 
       if (heap) {
-        heap.track("failed_airdrop", {
+        heap.track!("failed_airdrop", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           error: errorMessage,
@@ -207,7 +207,7 @@ const BaseSepoliaBox = () => {
       };
 
       if (heap) {
-        heap.track("executed_transfer", {
+        heap.track!("executed_transfer", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           to_address: toAddress,
@@ -225,7 +225,7 @@ const BaseSepoliaBox = () => {
       }
 
       if (heap) {
-        heap.track("completed_transfer", {
+        heap.track!("completed_transfer", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           to_address: toAddress,
@@ -242,7 +242,7 @@ const BaseSepoliaBox = () => {
         error instanceof Error ? error.message : String(error);
 
       if (heap) {
-        heap.track("failed_transfer", {
+        heap.track!("failed_transfer", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           to_address: toAddress,
@@ -281,64 +281,70 @@ const BaseSepoliaBox = () => {
           {user?.wallet?.address}
         </Link>
         <Divider />
-        <Text fontWeight="bold">Smart Account Address</Text>
-        <Link
-          href={`${BaseSepoliaEtherscanUrl}/address/${client?.account.address}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {client?.account.address}
-        </Link>
-        <Text fontWeight="bold">ADT Balance</Text>
-        <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
-        <Button
-          onClick={handleAirdrop}
-          colorScheme="blue"
-          isLoading={isLoading}
-          isDisabled={fullAirdropReceived || !client?.account.address}
-        >
-          {fullAirdropReceived ? "Fully Airdropped" : "Airdrop"}
-        </Button>
-        <Divider />
-        <Text fontWeight="bold">Transfer</Text>
-        <FormControl>
-          <FormLabel>To Address</FormLabel>
-          <Input
-            type="text"
-            placeholder="To Address"
-            value={toAddress}
-            onChange={handleToAddressChange}
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel>Amount</FormLabel>
-          <Input
-            type="text"
-            placeholder="Amount without decimals"
-            value={amount}
-            onChange={handleAmountChange}
-          />
-        </FormControl>
-        <Button
-          onClick={handleTransfer}
-          colorScheme="blue"
-          isDisabled={!client?.account.address}
-        >
-          Transfer
-        </Button>
-        {txHash && (
+        {client ? (
           <>
-            <Divider />
-            <Text fontWeight="bold">Transaction Hash</Text>
+            <Text fontWeight="bold">Smart Account Address</Text>
             <Link
-              noOfLines={1}
-              href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
+              href={`${BaseSepoliaEtherscanUrl}/address/${client?.account.address}`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {txHash}
+              {client?.account.address}
             </Link>
+            <Text fontWeight="bold">ADT Balance</Text>
+            <Text>{formatEther(balanceOf || BigInt(0))} ADT</Text>
+            <Button
+              onClick={handleAirdrop}
+              colorScheme="blue"
+              isLoading={isLoading}
+              isDisabled={fullAirdropReceived || !client?.account.address}
+            >
+              {fullAirdropReceived ? "Fully Airdropped" : "Airdrop"}
+            </Button>
+            <Divider />
+            <Text fontWeight="bold">Transfer</Text>
+            <FormControl>
+              <FormLabel>To Address</FormLabel>
+              <Input
+                type="text"
+                placeholder="To Address"
+                value={toAddress}
+                onChange={handleToAddressChange}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Amount</FormLabel>
+              <Input
+                type="text"
+                placeholder="Amount without decimals"
+                value={amount}
+                onChange={handleAmountChange}
+              />
+            </FormControl>
+            <Button
+              onClick={handleTransfer}
+              colorScheme="blue"
+              isDisabled={!client?.account.address}
+            >
+              Transfer
+            </Button>
+            {txHash && (
+              <>
+                <Divider />
+                <Text fontWeight="bold">Transaction Hash</Text>
+                <Link
+                  noOfLines={1}
+                  href={`${BaseSepoliaEtherscanUrl}/tx/${txHash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {txHash}
+                </Link>
+              </>
+            )}
           </>
+        ) : (
+          <Text fontWeight="bold">No Smart Account found</Text>
         )}
       </Stack>
       <Stack
