@@ -1,3 +1,4 @@
+import { useAnalytics } from "@/hooks";
 import ERC20AirdropABI from "@/lib/abi/ERC20Airdrop";
 import { BaseSepoliaEtherscanUrl, ERC20AirdropAddress } from "@/lib/constant";
 import {
@@ -38,6 +39,8 @@ const BaseSepoliaBox = () => {
   const [amount, setAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+
+  const { heap } = useAnalytics();
 
   const publicClient = createPublicClient({
     chain: baseSepolia,
@@ -129,6 +132,13 @@ const BaseSepoliaBox = () => {
         data,
       };
 
+      if (heap) {
+        heap.track("executed_airdrop", {
+          user_id: user?.id,
+          smart_account_address: client.account.address,
+        });
+      }
+
       const txHash = await client?.sendTransaction({
         account: client.account,
         calls: [tx],
@@ -138,12 +148,32 @@ const BaseSepoliaBox = () => {
         throw new Error("Transaction hash not found");
       }
 
+      if (heap) {
+        heap.track("completed_airdrop", {
+          user_id: user?.id,
+          smart_account_address: client.account.address,
+          tx_hash: txHash,
+        });
+      }
+
       setTxHash(txHash);
     } catch (error) {
       console.error(error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (heap) {
+        heap.track("failed_airdrop", {
+          user_id: user?.id,
+          smart_account_address: client.account.address,
+          error: errorMessage,
+        });
+      }
+
       toast({
         title: "Error airdropping tokens",
-        description: error instanceof Error ? error.message : String(error),
+        description: errorMessage,
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -176,6 +206,15 @@ const BaseSepoliaBox = () => {
         data,
       };
 
+      if (heap) {
+        heap.track("executed_transfer", {
+          user_id: user?.id,
+          smart_account_address: client.account.address,
+          to_address: toAddress,
+          amount: amount,
+        });
+      }
+
       const txHash = await client?.sendTransaction({
         account: client.account,
         calls: [tx],
@@ -185,12 +224,36 @@ const BaseSepoliaBox = () => {
         throw new Error("Transaction hash not found");
       }
 
+      if (heap) {
+        heap.track("completed_transfer", {
+          user_id: user?.id,
+          smart_account_address: client.account.address,
+          to_address: toAddress,
+          amount: amount,
+          tx_hash: txHash,
+        });
+      }
+
       setTxHash(txHash);
     } catch (error) {
       console.error(error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      if (heap) {
+        heap.track("failed_transfer", {
+          user_id: user?.id,
+          smart_account_address: client.account.address,
+          to_address: toAddress,
+          amount: amount,
+          error: errorMessage,
+        });
+      }
+
       toast({
         title: "Error transferring tokens",
-        description: error instanceof Error ? error.message : String(error),
+        description: errorMessage,
         status: "error",
         duration: 3000,
         isClosable: true,
