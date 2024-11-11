@@ -90,7 +90,7 @@ const SolanaBox = () => {
       const toPk = new PublicKey(toAddress);
 
       if (heap) {
-        heap.track!("transfer_solana", {
+        heap.track("transfer_solana", {
           user_id: user?.id,
           from_address: fromPk.toString(),
           to_address: toPk.toString(),
@@ -114,7 +114,7 @@ const SolanaBox = () => {
       const hash = await solanaWallet.sendTransaction!(tx, connection);
 
       if (heap) {
-        heap.track!("transfer_solana_success", {
+        heap.track("transfer_solana_success", {
           user_id: user?.id,
           from_address: fromPk.toString(),
           to_address: toPk.toString(),
@@ -127,7 +127,7 @@ const SolanaBox = () => {
     } catch (error) {
       console.error(error);
       if (heap) {
-        heap.track!("failed_transfer_solana", {
+        heap.track("failed_transfer_solana", {
           user_id: user?.id,
           error: error instanceof Error ? error.message : "",
         });
@@ -233,7 +233,7 @@ const SolanaBox = () => {
               onClick={async () => {
                 try {
                   if (heap) {
-                    heap.track!("create_solana_wallet", {
+                    heap.track("create_solana_wallet", {
                       user_id: user?.id,
                     });
                   }
@@ -243,7 +243,7 @@ const SolanaBox = () => {
                   const errMessage = e instanceof Error ? e.message : "";
 
                   if (heap) {
-                    heap.track!("failed_create_solana_wallet", {
+                    heap.track("failed_create_solana_wallet", {
                       user_id: user?.id,
                       error: errMessage,
                     });

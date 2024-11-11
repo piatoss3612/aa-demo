@@ -133,7 +133,7 @@ const BaseSepoliaBox = () => {
       };
 
       if (heap) {
-        heap.track!("executed_airdrop", {
+        heap.track("executed_airdrop", {
           user_id: user?.id,
           smart_account_address: client.account.address,
         });
@@ -149,7 +149,7 @@ const BaseSepoliaBox = () => {
       }
 
       if (heap) {
-        heap.track!("completed_airdrop", {
+        heap.track("completed_airdrop", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           tx_hash: txHash,
@@ -164,7 +164,7 @@ const BaseSepoliaBox = () => {
         error instanceof Error ? error.message : String(error);
 
       if (heap) {
-        heap.track!("failed_airdrop", {
+        heap.track("failed_airdrop", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           error: errorMessage,
@@ -207,7 +207,7 @@ const BaseSepoliaBox = () => {
       };
 
       if (heap) {
-        heap.track!("executed_transfer", {
+        heap.track("executed_transfer", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           to_address: toAddress,
@@ -225,7 +225,7 @@ const BaseSepoliaBox = () => {
       }
 
       if (heap) {
-        heap.track!("completed_transfer", {
+        heap.track("completed_transfer", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           to_address: toAddress,
@@ -242,7 +242,7 @@ const BaseSepoliaBox = () => {
         error instanceof Error ? error.message : String(error);
 
       if (heap) {
-        heap.track!("failed_transfer", {
+        heap.track("failed_transfer", {
           user_id: user?.id,
           smart_account_address: client.account.address,
           to_address: toAddress,
