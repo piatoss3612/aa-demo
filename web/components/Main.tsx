@@ -14,6 +14,7 @@ import BaseSepoliaBox from "./BaseSepoliaBox";
 import SolanaBox from "./SolanaBox";
 import { useEffect } from "react";
 import { useAnalytics } from "@/hooks";
+import mixpanel from "mixpanel-browser";
 
 const Main = () => {
   const { ready, authenticated, user, login, logout } = usePrivy();
@@ -30,6 +31,16 @@ const Main = () => {
       }
     }
   }, [isLoaded, heap, user]);
+
+  useEffect(() => {
+    if (authenticated && user) {
+      mixpanel.identify(user.id);
+      mixpanel.people.set({
+        $email: user.email,
+        $address: user.wallet?.address,
+      });
+    }
+  }, [authenticated, user]);
 
   if (!authenticated) {
     return (

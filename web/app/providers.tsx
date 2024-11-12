@@ -6,8 +6,15 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
 import { base, baseSepolia } from "viem/chains";
+import mixpanel from "mixpanel-browser";
 
 const queryClient = new QueryClient();
+
+mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || "", {
+  debug: true,
+  track_pageview: true,
+  persistence: "cookie",
+});
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = React.useState(false);

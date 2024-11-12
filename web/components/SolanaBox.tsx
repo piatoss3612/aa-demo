@@ -26,6 +26,8 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
+import { mix } from "framer-motion";
+import mixpanel from "mixpanel-browser";
 import React, { useCallback, useEffect, useState } from "react";
 
 const SolanaBox = () => {
@@ -89,6 +91,13 @@ const SolanaBox = () => {
       const fromPk = new PublicKey(solanaWallet.address);
       const toPk = new PublicKey(toAddress);
 
+      mixpanel.track("transfer_solana", {
+        user_id: user?.id,
+        from_address: fromPk.toString(),
+        to_address: toPk.toString(),
+        amount,
+      });
+
       if (heap) {
         heap.track("transfer_solana", {
           user_id: user?.id,
@@ -113,6 +122,16 @@ const SolanaBox = () => {
 
       const hash = await solanaWallet.sendTransaction!(tx, connection);
 
+      if (mixpanel) {
+        mixpanel.track("transfer_solana_success", {
+          user_id: user?.id,
+          from_address: fromPk.toString(),
+          to_address: toPk.toString(),
+          amount,
+          tx_hash: hash,
+        });
+      }
+
       if (heap) {
         heap.track("transfer_solana_success", {
           user_id: user?.id,
@@ -126,6 +145,12 @@ const SolanaBox = () => {
       setTxHash(hash);
     } catch (error) {
       console.error(error);
+
+      mixpanel.track("failed_transfer_solana", {
+        user_id: user?.id,
+        error: error instanceof Error ? error.message : "",
+      });
+
       if (heap) {
         heap.track("failed_transfer_solana", {
           user_id: user?.id,
@@ -232,6 +257,10 @@ const SolanaBox = () => {
               colorScheme="blue"
               onClick={async () => {
                 try {
+                  mixpanel.track("create_solana_wallet", {
+                    user_id: user?.id,
+                  });
+
                   if (heap) {
                     heap.track("create_solana_wallet", {
                       user_id: user?.id,
@@ -241,6 +270,11 @@ const SolanaBox = () => {
                   await createWallet();
                 } catch (e) {
                   const errMessage = e instanceof Error ? e.message : "";
+
+                  mixpanel.track("failed_create_solana_wallet", {
+                    user_id: user?.id,
+                    error: errMessage,
+                  });
 
                   if (heap) {
                     heap.track("failed_create_solana_wallet", {
