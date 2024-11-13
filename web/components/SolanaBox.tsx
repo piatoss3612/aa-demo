@@ -187,6 +187,12 @@ const SolanaBox = () => {
     }
   }, [authenticated && wallets.length]);
 
+  useEffect(() => {
+    mixpanel.track_pageview({
+      page: "SolanaBox",
+    });
+  }, []);
+
   return (
     <>
       <Stack

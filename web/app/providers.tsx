@@ -11,7 +11,6 @@ import mixpanel from "mixpanel-browser";
 const queryClient = new QueryClient();
 
 mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || "", {
-  debug: true,
   track_pageview: true,
   persistence: "cookie",
 });

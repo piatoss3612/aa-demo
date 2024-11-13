@@ -22,7 +22,7 @@ import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { useQuery } from "@tanstack/react-query";
 import { mix } from "framer-motion";
 import mixpanel from "mixpanel-browser";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   createPublicClient,
   encodeFunctionData,
@@ -302,6 +302,12 @@ const BaseSepoliaBox = () => {
       });
     }
   }, [client, toAddress, amount]);
+
+  useEffect(() => {
+    mixpanel.track_pageview({
+      page: "BaseSepoliaBox",
+    });
+  }, []);
 
   return (
     <>
