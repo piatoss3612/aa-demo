@@ -22,6 +22,7 @@ import { useSmartWallets } from "@privy-io/react-auth/smart-wallets";
 import { useQuery } from "@tanstack/react-query";
 import { mix } from "framer-motion";
 import mixpanel from "mixpanel-browser";
+import posthog from "posthog-js";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   createPublicClient,
@@ -139,6 +140,11 @@ const BaseSepoliaBox = () => {
         smart_account_address: client.account.address,
       });
 
+      posthog.capture("executed_airdrop", {
+        user_id: user?.id,
+        smart_account_address: client.account.address,
+      });
+
       if (heap) {
         heap.track("executed_airdrop", {
           user_id: user?.id,
@@ -161,6 +167,12 @@ const BaseSepoliaBox = () => {
         tx_hash: txHash,
       });
 
+      posthog.capture("completed_airdrop", {
+        user_id: user?.id,
+        smart_account_address: client.account.address,
+        tx_hash: txHash,
+      });
+
       if (heap) {
         heap.track("completed_airdrop", {
           user_id: user?.id,
@@ -177,6 +189,12 @@ const BaseSepoliaBox = () => {
         error instanceof Error ? error.message : String(error);
 
       mixpanel.track("failed_airdrop", {
+        user_id: user?.id,
+        smart_account_address: client.account.address,
+        error: errorMessage,
+      });
+
+      posthog.capture("failed_airdrop", {
         user_id: user?.id,
         smart_account_address: client.account.address,
         error: errorMessage,
@@ -232,6 +250,13 @@ const BaseSepoliaBox = () => {
         amount: amount,
       });
 
+      posthog.capture("executed_transfer", {
+        user_id: user?.id,
+        smart_account_address: client.account.address,
+        to_address: toAddress,
+        amount: amount,
+      });
+
       if (heap) {
         heap.track("executed_transfer", {
           user_id: user?.id,
@@ -251,6 +276,14 @@ const BaseSepoliaBox = () => {
       }
 
       mixpanel.track("completed_transfer", {
+        user_id: user?.id,
+        smart_account_address: client.account.address,
+        to_address: toAddress,
+        amount: amount,
+        tx_hash: txHash,
+      });
+
+      posthog.capture("completed_transfer", {
         user_id: user?.id,
         smart_account_address: client.account.address,
         to_address: toAddress,
@@ -283,6 +316,14 @@ const BaseSepoliaBox = () => {
         error: errorMessage,
       });
 
+      posthog.capture("failed_transfer", {
+        user_id: user?.id,
+        smart_account_address: client.account.address,
+        to_address: toAddress,
+        amount: amount,
+        error: errorMessage,
+      });
+
       if (heap) {
         heap.track("failed_transfer", {
           user_id: user?.id,
@@ -305,6 +346,10 @@ const BaseSepoliaBox = () => {
 
   useEffect(() => {
     mixpanel.track_pageview({
+      page: "BaseSepoliaBox",
+    });
+
+    posthog.capture("pageview", {
       page: "BaseSepoliaBox",
     });
   }, []);

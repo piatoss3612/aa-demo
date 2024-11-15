@@ -7,12 +7,18 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { SmartWalletsProvider } from "@privy-io/react-auth/smart-wallets";
 import { base, baseSepolia } from "viem/chains";
 import mixpanel from "mixpanel-browser";
+import posthog from "posthog-js";
 
 const queryClient = new QueryClient();
 
 mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || "", {
   track_pageview: true,
   persistence: "cookie",
+});
+
+posthog.init(process.env.NEXT_PUBLIC_POSTHOG_TOKEN || "", {
+  api_host: "https://us.i.posthog.com",
+  person_profiles: "always",
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {

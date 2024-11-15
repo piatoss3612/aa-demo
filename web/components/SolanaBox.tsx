@@ -28,6 +28,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { mix } from "framer-motion";
 import mixpanel from "mixpanel-browser";
+import posthog from "posthog-js";
 import React, { useCallback, useEffect, useState } from "react";
 
 const SolanaBox = () => {
@@ -98,6 +99,13 @@ const SolanaBox = () => {
         amount,
       });
 
+      posthog.capture("transfer_solana", {
+        user_id: user?.id,
+        from_address: fromPk.toString(),
+        to_address: toPk.toString(),
+        amount,
+      });
+
       if (heap) {
         heap.track("transfer_solana", {
           user_id: user?.id,
@@ -122,15 +130,21 @@ const SolanaBox = () => {
 
       const hash = await solanaWallet.sendTransaction!(tx, connection);
 
-      if (mixpanel) {
-        mixpanel.track("transfer_solana_success", {
-          user_id: user?.id,
-          from_address: fromPk.toString(),
-          to_address: toPk.toString(),
-          amount,
-          tx_hash: hash,
-        });
-      }
+      mixpanel.track("transfer_solana_success", {
+        user_id: user?.id,
+        from_address: fromPk.toString(),
+        to_address: toPk.toString(),
+        amount,
+        tx_hash: hash,
+      });
+
+      posthog.capture("transfer_solana_success", {
+        user_id: user?.id,
+        from_address: fromPk.toString(),
+        to_address: toPk.toString(),
+        amount,
+        tx_hash: hash,
+      });
 
       if (heap) {
         heap.track("transfer_solana_success", {
@@ -147,6 +161,11 @@ const SolanaBox = () => {
       console.error(error);
 
       mixpanel.track("failed_transfer_solana", {
+        user_id: user?.id,
+        error: error instanceof Error ? error.message : "",
+      });
+
+      posthog.capture("failed_transfer_solana", {
         user_id: user?.id,
         error: error instanceof Error ? error.message : "",
       });
@@ -267,6 +286,10 @@ const SolanaBox = () => {
                     user_id: user?.id,
                   });
 
+                  posthog.capture("create_solana_wallet", {
+                    user_id: user?.id,
+                  });
+
                   if (heap) {
                     heap.track("create_solana_wallet", {
                       user_id: user?.id,
@@ -278,6 +301,11 @@ const SolanaBox = () => {
                   const errMessage = e instanceof Error ? e.message : "";
 
                   mixpanel.track("failed_create_solana_wallet", {
+                    user_id: user?.id,
+                    error: errMessage,
+                  });
+
+                  posthog.capture("failed_create_solana_wallet", {
                     user_id: user?.id,
                     error: errMessage,
                   });

@@ -15,6 +15,7 @@ import SolanaBox from "./SolanaBox";
 import { useEffect } from "react";
 import { useAnalytics } from "@/hooks";
 import mixpanel from "mixpanel-browser";
+import posthog from "posthog-js";
 
 const Main = () => {
   const { ready, authenticated, user, login, logout } = usePrivy();
@@ -36,6 +37,12 @@ const Main = () => {
     if (authenticated && user) {
       mixpanel.identify(user.id);
       mixpanel.people.set({
+        $email: user.email,
+        $address: user.wallet?.address,
+      });
+
+      posthog.identify(user.id);
+      posthog.people.set({
         $email: user.email,
         $address: user.wallet?.address,
       });
