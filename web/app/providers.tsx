@@ -19,6 +19,7 @@ mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN || "", {
 posthog.init(process.env.NEXT_PUBLIC_POSTHOG_TOKEN || "", {
   api_host: "https://us.i.posthog.com",
   person_profiles: "always",
+  autocapture: false,
 });
 
 export function Providers({ children }: { children: React.ReactNode }) {
