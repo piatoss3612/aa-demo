@@ -1,4 +1,3 @@
-import { useAnalytics } from "@/hooks";
 import { SolanaDevnetFaucetUrl, SolanaExplorerUrl } from "@/lib/constant";
 import {
   Button,
@@ -26,9 +25,6 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
-import { mix } from "framer-motion";
-import mixpanel from "mixpanel-browser";
-import posthog from "posthog-js";
 import React, { useCallback, useEffect, useState } from "react";
 
 const SolanaBox = () => {
@@ -42,8 +38,6 @@ const SolanaBox = () => {
   const [amount, setAmount] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
-
-  const { heap } = useAnalytics();
 
   const wallet = user?.linkedAccounts.find(
     (account): account is WalletWithMetadata =>
@@ -92,29 +86,6 @@ const SolanaBox = () => {
       const fromPk = new PublicKey(solanaWallet.address);
       const toPk = new PublicKey(toAddress);
 
-      mixpanel.track("transfer_solana", {
-        user_id: user?.id,
-        from_address: fromPk.toString(),
-        to_address: toPk.toString(),
-        amount,
-      });
-
-      posthog.capture("transfer_solana", {
-        user_id: user?.id,
-        from_address: fromPk.toString(),
-        to_address: toPk.toString(),
-        amount,
-      });
-
-      if (heap) {
-        heap.track("transfer_solana", {
-          user_id: user?.id,
-          from_address: fromPk.toString(),
-          to_address: toPk.toString(),
-          amount,
-        });
-      }
-
       const tx = new Transaction().add(
         SystemProgram.transfer({
           fromPubkey: fromPk,
@@ -130,52 +101,9 @@ const SolanaBox = () => {
 
       const hash = await solanaWallet.sendTransaction!(tx, connection);
 
-      mixpanel.track("transfer_solana_success", {
-        user_id: user?.id,
-        from_address: fromPk.toString(),
-        to_address: toPk.toString(),
-        amount,
-        tx_hash: hash,
-      });
-
-      posthog.capture("transfer_solana_success", {
-        user_id: user?.id,
-        from_address: fromPk.toString(),
-        to_address: toPk.toString(),
-        amount,
-        tx_hash: hash,
-      });
-
-      if (heap) {
-        heap.track("transfer_solana_success", {
-          user_id: user?.id,
-          from_address: fromPk.toString(),
-          to_address: toPk.toString(),
-          amount,
-          tx_hash: hash,
-        });
-      }
-
       setTxHash(hash);
     } catch (error) {
       console.error(error);
-
-      mixpanel.track("failed_transfer_solana", {
-        user_id: user?.id,
-        error: error instanceof Error ? error.message : "",
-      });
-
-      posthog.capture("failed_transfer_solana", {
-        user_id: user?.id,
-        error: error instanceof Error ? error.message : "",
-      });
-
-      if (heap) {
-        heap.track("failed_transfer_solana", {
-          user_id: user?.id,
-          error: error instanceof Error ? error.message : "",
-        });
-      }
 
       toast({
         title: "Failed to transfer",
@@ -205,12 +133,6 @@ const SolanaBox = () => {
       setConnection(connection);
     }
   }, [authenticated && wallets.length]);
-
-  useEffect(() => {
-    mixpanel.track_pageview({
-      page: "SolanaBox",
-    });
-  }, []);
 
   return (
     <>
@@ -282,40 +204,9 @@ const SolanaBox = () => {
               colorScheme="blue"
               onClick={async () => {
                 try {
-                  mixpanel.track("create_solana_wallet", {
-                    user_id: user?.id,
-                  });
-
-                  posthog.capture("create_solana_wallet", {
-                    user_id: user?.id,
-                  });
-
-                  if (heap) {
-                    heap.track("create_solana_wallet", {
-                      user_id: user?.id,
-                    });
-                  }
-
                   await createWallet();
                 } catch (e) {
                   const errMessage = e instanceof Error ? e.message : "";
-
-                  mixpanel.track("failed_create_solana_wallet", {
-                    user_id: user?.id,
-                    error: errMessage,
-                  });
-
-                  posthog.capture("failed_create_solana_wallet", {
-                    user_id: user?.id,
-                    error: errMessage,
-                  });
-
-                  if (heap) {
-                    heap.track("failed_create_solana_wallet", {
-                      user_id: user?.id,
-                      error: errMessage,
-                    });
-                  }
 
                   toast({
                     title: "Failed to create wallet",

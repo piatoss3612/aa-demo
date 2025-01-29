@@ -13,41 +13,9 @@ import { usePrivy } from "@privy-io/react-auth";
 import BaseSepoliaBox from "./BaseSepoliaBox";
 import SolanaBox from "./SolanaBox";
 import { useEffect } from "react";
-import { useAnalytics } from "@/hooks";
-import mixpanel from "mixpanel-browser";
-import posthog from "posthog-js";
 
 const Main = () => {
-  const { ready, authenticated, user, login, logout } = usePrivy();
-  const { isLoaded, heap } = useAnalytics();
-
-  useEffect(() => {
-    if (isLoaded && heap) {
-      if (user) {
-        heap.identify!(user.id);
-        heap.addUserProperties!({
-          email: user.email,
-          address: user.wallet?.address,
-        });
-      }
-    }
-  }, [isLoaded, heap, user]);
-
-  useEffect(() => {
-    if (authenticated && user) {
-      mixpanel.identify(user.id);
-      mixpanel.people.set({
-        $email: user.email,
-        $address: user.wallet?.address,
-      });
-
-      posthog.identify(user.id);
-      posthog.people.set({
-        $email: user.email,
-        $address: user.wallet?.address,
-      });
-    }
-  }, [authenticated, user]);
+  const { ready, authenticated, login, logout } = usePrivy();
 
   if (!authenticated) {
     return (
