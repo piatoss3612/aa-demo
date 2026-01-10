@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import { Providers } from "./providers";
 import Script from "next/script";
 
+// Force dynamic rendering to avoid Privy initialization during static build
+export const dynamic = "force-dynamic";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
