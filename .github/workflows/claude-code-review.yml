@@ -3,6 +3,12 @@ name: Claude Code Review
 on:
   pull_request:
     types: [labeled]
+    paths-ignore:
+      - "**/*.md"
+      - "**/*.png"
+      - "**/*.jpg"
+      - "**/*.svg"
+      - ".github/**"
 
 concurrency:
   group: claude-review-pr-${{ github.event.pull_request.number }}
