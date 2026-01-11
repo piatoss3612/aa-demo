@@ -6,7 +6,6 @@ export default function Home() {
     <Box display="flex" flexDirection="column" minHeight="100vh" bg="gray.300">
       <Center my="auto">
         <Main />
-      </Center>
     </Box>
   );
 }
